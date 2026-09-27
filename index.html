@@ -1,0 +1,82 @@
+# evanzx
+<!DOCTYPE html>
+<html>
+<head>
+<title>CEK ID FF - KB RIFYAN M1</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+<style>
+body{background:#080808;color:#fff;font-family:sans-serif;padding:15px;margin:0}
+.box{max-width:420px;margin:auto;background:linear-gradient(180deg,#1a1a1a,#121212);padding:22px;border-radius:22px;border:1px solid #2a2a2a;box-shadow:0 0 20px #ffe60020}
+h2{font-family:'Orbitron';text-align:center;letter-spacing:1px}
+input{width:100%;padding:16px;border-radius:14px;border:1px solid #333;background:#0f0f0f;color:#fff;box-sizing:border-box;font-size:18px;text-align:center}
+button{width:100%;padding:16px;border-radius:14px;border:none;margin-top:12px;background:#ffe600;font-weight:900;font-size:16px;box-shadow:0 5px 0 #c4b000}
+button:active{transform:translateY(3px);box-shadow:none}
+.res{margin-top:22px;background:#1e1e1e;padding:18px;border-radius:16px;display:none;text-align:center;border:1px solid #333}
+.ok{color:#25D366;font-weight:bold}
+</style>
+</head>
+<body>
+<div class="box">
+<h2>𝗞𝗕 𝗥𝗜𝗙𝗬𝗔𝗡 𝗠𝟭</h2>
+<p style="text-align:center;margin-top:-10px"><a href="https://whatsapp.com/channel/0029VbDqJLLD8SE0LJXubU0W" style="color:#ffe600;text-decoration:none;font-size:13px">whatsapp.com/channel/KB-RIFYAN-M1</a></p>
+<input id="uid" placeholder="ID FF : 1234567890" inputmode="numeric">
+<button onclick="cekFF()">CEK NAMA AKUN</button>
+<div id="out" class="res">
+<div style="font-size:60px">🎯</div>
+<h2 id="nick" style="font-size:24px;margin:10px 0">-</h2>
+<p>ID: <b id="idout">-</b></p>
+<p id="status" class="ok">✅ AKUN AKTIF</p>
+<p id="extra" style="opacity:.5;font-size:12px;margin-top:10px">Powered by KB RIFYAN M1</p>
+</div>
+<p id="err" style="text-align:center;color:#ff4444;margin-top:15px"></p>
+</div>
+
+<script>
+const proxy = 'https://corsproxy.io/?';
+
+async function cekFF(){
+ let id = document.getElementById('uid').value.trim();
+ let out = document.getElementById('out');
+ let err = document.getElementById('err');
+ if(id.length < 6) return alert('ID FF minimal 8 angka cok');
+ out.style.display='none'; err.innerText='⏳ Sedang mengecek...';
+
+ try{
+  // 1. Ambil token duniagames
+  let tokenReq = await fetch(proxy + encodeURIComponent('https://api.duniagames.co.id/api/item-catalog/v1/get-token'),{
+   method:'POST',
+   headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({msisdn:"0"})
+  }).then(r=>r.json());
+  
+  let token = tokenReq.data.token;
+
+  // 2. Inquiry
+  let cekReq = await fetch(proxy + encodeURIComponent('https://api.duniagames.co.id/api/transaction/v1/top-up/inquiry/store'),{
+   method:'POST',
+   headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({
+    productId:3,itemId:353,product_ref:"REG",product_ref_denom:"REG",
+    catalogId:376,paymentId:1252,gameId:id,token:token,campaignUrl:""
+   })
+  }).then(r=>r.json());
+
+  let user = cekReq.data.gameDetail.userName;
+  if(user && user !== ""){
+   document.getElementById('nick').innerText = user;
+   document.getElementById('idout').innerText = id;
+   out.style.display='block'; err.innerText='';
+   return;
+  } else {
+   throw 'not found';
+  }
+
+ } catch(e){
+  err.innerText = '❌ ID tidak ditemukan atau server sibuk. Coba lagi.';
+  console.log(e);
+ }
+}
+</script>
+</body>
+</html>
